@@ -2,7 +2,7 @@
    EMS — Frontend Application
    =========================== */
 
-const API = "http://localhost:4000/employees";
+const API = "/employees";
 
 // ── DOM References ──────────────────────────
 const tbody = document.getElementById("employee-tbody");

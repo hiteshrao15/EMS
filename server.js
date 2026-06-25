@@ -32,8 +32,12 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/employees", employeeRoutes);
 
 
-app.listen(4000, () => {
+// Export for Vercel serverless deployment
+module.exports = app;
 
-  console.log("Server Running on Port 4000");
-
-});
+// Only listen when running locally (not on Vercel)
+if (require.main === module) {
+  app.listen(4000, () => {
+    console.log("Server Running on Port 4000");
+  });
+}
