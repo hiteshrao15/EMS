@@ -8,9 +8,13 @@ const employeeRoutes = require("./routes/employeeRoutes");
 const loggerMiddleware = require("./middleware/loggerMiddleware");
 
 
-// Middleware
-
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.body) {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
 
 // CORS
 app.use((req, res, next) => {
