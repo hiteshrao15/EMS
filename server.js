@@ -1,0 +1,39 @@
+const express = require("express");
+const path = require("path");
+
+const app = express();
+
+const employeeRoutes = require("./routes/employeeRoutes");
+
+const loggerMiddleware = require("./middleware/loggerMiddleware");
+
+
+// Middleware
+
+app.use(express.json());
+
+// CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === "OPTIONS") return res.sendStatus(200);
+  next();
+});
+
+app.use(loggerMiddleware);
+
+// Serve static frontend
+app.use(express.static(path.join(__dirname, "public")));
+
+
+// Routes
+
+app.use("/employees", employeeRoutes);
+
+
+app.listen(4000, () => {
+
+  console.log("Server Running on Port 4000");
+
+});
