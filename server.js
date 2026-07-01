@@ -6,6 +6,7 @@ const app = express();
 const employeeRoutes = require("./routes/employeeRoutes");
 
 const loggerMiddleware = require("./middleware/loggerMiddleware");
+const { default: mongoose } = require("mongoose");
 
 
 app.use((req, res, next) => {
@@ -32,12 +33,19 @@ app.use(express.static(path.join(__dirname, "public")));
 
 
 // Routes
-
 app.use("/employees", employeeRoutes);
-
+app.use("/api/employees", employeeRoutes);
 
 // Export for Vercel serverless deployment
 module.exports = app;
+
+mongoose.connect("mongodb+srv://hitesh:hitesh15@hitesh.gnitjvd.mongodb.net/EMS")
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
 
 // Only listen when running locally (not on Vercel)
 if (require.main === module) {

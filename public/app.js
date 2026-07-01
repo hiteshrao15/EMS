@@ -224,7 +224,14 @@ async function fetchEmployees() {
   try {
     const res = await fetch(API);
     if (!res.ok) throw new Error("Failed to fetch");
-    employees = await res.json();
+    const data = await res.json();
+    employees = data.map((emp) => {
+      const id = emp.id !== undefined ? Number(emp.id) : undefined;
+      return {
+        ...emp,
+        id: Number.isFinite(id) ? id : emp._id
+      };
+    });
     updateStats();
     updateDeptFilter();
     renderTable();
@@ -355,13 +362,13 @@ tbody.addEventListener("click", (e) => {
   const deleteBtn = e.target.closest(".btn-delete");
 
   if (editBtn) {
-    const id = Number(editBtn.dataset.id);
-    const emp = employees.find(e => e.id === id);
+    const id = editBtn.dataset.id;
+    const emp = employees.find(e => String(e.id) === id);
     if (emp) openModal("edit", emp);
   }
 
   if (deleteBtn) {
-    const id = Number(deleteBtn.dataset.id);
+    const id = deleteBtn.dataset.id;
     openDeleteDialog(id);
   }
 });
@@ -372,9 +379,10 @@ deleteOverlay.addEventListener("click", (e) => {
   if (e.target === deleteOverlay) closeDeleteDialog();
 });
 btnDeleteConfirm.addEventListener("click", async () => {
-  if (deleteTargetId !== null) {
+  const id = deleteTargetId;
+  if (id !== null) {
     closeDeleteDialog();
-    await deleteEmployee(deleteTargetId);
+    await deleteEmployee(id);
   }
 });
 
